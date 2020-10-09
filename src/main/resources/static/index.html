@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="css/tets.css"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Openshift template generator</title>
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/jquery-1.12.4.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/main.js"></script>
+</head>
+<body>
+<div class="controlgroup">
+    <button id="create-app" style="display: block" class="ui-button ui-corner-all ui-widget">Application</button>
+    <button id="create-container" style="display: none" class="ui-button ui-corner-all ui-widget">Container</button>
+    <button id="create-services" style="display: none" class="ui-button ui-corner-all ui-widget">Services</button>
+    <button id="create-routes" style="display: none" class="ui-button ui-corner-all ui-widget">Routes</button>
+    <button id="generate" style="display: none" class="ui-button ui-corner-all ui-widget">Generate</button>
+</div>
+<div style="width: 100%; height: 600px">
+    <textarea id="output" style="display: none; width: 100%; height: 100%"></textarea>
+</div>
+
+<div title="Application details" id="app-form"
+     style="width: auto; min-height: 0px; max-height: none; height: 269px;">
+    <div style="float: left; ;padding: 5px ">
+        <input style="width: 240px" type="text" id="app-name" placeholder="Openshift project Name"/>
+        <br/>
+        <input style="margin-top: 5px; width: 240px" type="text" id="app-cluster" placeholder="Openshift cluster"/>
+    </div>
+</div>
+
+<div title="Container details" id="container-form"
+     style="width: auto; min-height: 0px; max-height: none; height: 269px;">
+    <div style="float: left; ;padding: 5px ">
+        <input style="width: 220px" type="text" id="container-name" placeholder="Application Name"/>
+        <br/>
+        <input style="margin-top: 5px; width: 220px" type="text" id="image" placeholder="Container Image"/>
+    </div>
+    <div style="float: left; ; width: 145px; padding: 5px;">
+        <input max="65535" min="1" placeholder="Port" type="number" style="width: 60px" id="add-port">
+        <input style="width: 60px" type="text" id="add-port-name" placeholder="Name"/>
+        <div style="text-align: center">
+            <input style="width: 30px; margin-top: 5px" type="button" id="add-port-button" value="+">
+            <input style="width: 30px" type="button" id="remove-port-button" value="-">
+        </div>
+        <select id="add-port-list" multiple style="height: 63px; width: 137px;margin-top: 5px;" size="3"></select>
+    </div>
+
+    <div style="float: left; ; width: 395px; padding: 5px; margin-top: 5px">
+        <input placeholder="EnvVar Name" type="text" style="font-size: 14px; width: 39%" id="add-env-name">
+        <input placeholder="EnvVar Value" type="text" style="font-size: 14px; width: 38%" id="add-env-val">
+        <input style="width: 30px" type="button" id="add-env-button" value="+">
+        <input style="width: 30px" type="button" id="remove-env-button" value="-">
+        <br/>
+        <select id="add-env-list" multiple style="height: 63px; width: 100%;margin-top: 5px;" size="3"></select>
+    </div>
+    <div style="float: left; padding: 5px; width: 406px; height: 130px; ">
+        <div style="float: left; height: 95%;  width: 40%; padding: 5px;">
+            <input placeholder="PVC Name" type="text" style="font-size: 14px; width: 90%;margin-top: 15px;"
+                   id="add-mount-pvc">
+            <input placeholder="Mount directory" type="text" style="font-size: 14px; width: 90%;margin-top: 15px;"
+                   id="add-mount-dir">
+            <input placeholder="PV Subdirectory" type="text" style="font-size: 14px; width: 90%;margin-top: 15px;"
+                   id="add-mount-subdir">
+        </div>
+        <div style="float: left; text-align: center; height: 95%; ; width: 11%; padding: 5px;">
+            <input style="width: 30px; margin-top: 30px" type="button" id="add-mount-button" value="+">
+            <br>
+            <input style="width: 30px; margin-top: 30px" type="button" id="remove-mount-button" value="-">
+        </div>
+        <div style="float: left; height: 95%; ; width: 40%; padding: 5px;">
+            <select id="add-mount-list" multiple style="height: 100%; width: 100%;margin-top: 5px;" size="3"></select>
+        </div>
+    </div>
+    <div style="float: left; padding: 5px; width: 406px; height: 90px; ">
+        <div style="width: 160px; float: left">
+            <label style="font-size: 12px;" for="svc-res-cpu-req">CPU Requests</label>
+            <input id="svc-res-cpu-req" value="100m" type="text" style="margin-top: 5px; width: 150px; float: top"
+                   placeholder="CPU Requests">
+            <label style="font-size: 12px;" for="svc-res-cpu-limit">CPU Limit</label>
+            <input id="svc-res-cpu-limit" value="500m" type="text" style="margin-top: 5px; width: 150px; float: top"
+                   placeholder="CPU Limit">
+        </div>
+        <div style="width: 160px; float: left; margin-left: 30px">
+            <label style="font-size: 12px;" for="svc-res-mem-req">Memory Requests</label>
+            <input id="svc-res-mem-req" value="1Gi" type="text" style="margin-top: 5px; width: 150px; float: top"
+                   placeholder="Memory Requests">
+            <label style="font-size: 12px;" for="svc-res-mem-limit">Memory Limit</label>
+            <input id="svc-res-mem-limit" value="1Gi" type="text" style="margin-top: 5px; width: 150px; float: top"
+                   placeholder="Memory Limit">
+        </div>
+    </div>
+</div>
+
+<div title="Services details" id="service-form"
+     style="width: auto; min-height: 0px; max-height: none; height: 269px;">
+    <div>
+        <div style="height: 140px; padding: 5px; width: 270px;float: left; border-width: 1px; border-style: solid; border-color: dimgrey">
+            <div style="width: 155px; float: left">
+                <label style="font-size: 12px;" for="svc-container-ports">Available ports</label>
+                <select id="svc-container-ports" style="width: 150px; margin-top: 5px">
+
+                </select>
+            </div>
+            <div style="margin-left: 5px; float: left;width: 110px">
+                <label style="font-size: 12px;" for="svc-port-name">Port Name</label>
+                <input id="svc-port-name" type="text" style="margin-top: 5px; width: 100px; float: top"
+                       placeholder="Port Name">
+                <br/>
+                <label style="font-size: 12px;" for="svc-port-src">Port Source</label>
+                <input id="svc-port-src" type="number" disabled style="margin-top: 5px; width: 100px; float: top"
+                       placeholder="Source Port">
+                <br/>
+                <label style="font-size: 12px;" for="svc-port-dst">Port Target</label>
+                <input id="svc-port-dst" type="number" style="margin-top: 5px; width: 100px; float: top"
+                       placeholder="Target Port">
+            </div>
+        </div>
+        <div style="float: left; text-align: center; height: 95%; ; width: 30px; padding: 5px;">
+            <input style="width: 30px; margin-top: 25px" type="button" id="svc-add-port-button" value="+">
+            <input style="width: 30px; margin-top: 10px" type="button" id="svc-remove-port-button" value="-">
+        </div>
+        <div style="height: 112px; padding: 5px; width: 380px;float: left; border-width: 1px; border-style: solid; border-color: dimgrey">
+            <div style="margin-left: 5px; float: left;width: 205px">
+                <label style="font-size: 12px;" for="svc-port-list">Configured Ports</label>
+                <select multiple size="4" id="svc-port-list" style="width: 200px; margin-top: 5px">
+
+                </select>
+            </div>
+            <div style="margin-left: 5px; float: left;width: 160px">
+                <label style="font-size: 12px;" for="svc-name">Service Setup</label>
+                <input id="svc-name" type="text" style="margin-top: 5px; width: 150px; float: top"
+                       placeholder="Service Name">
+                <input style="width: 75px; margin-top: 10px" type="button" id="svc-add-button" value="Add">
+            </div>
+        </div>
+        <div id="svc-services-list"
+             style="font-size: 12px; height: 200px;margin-top: 5px;width: 712px;border-width: 1px;border-style: solid;border-color: dimgrey;float: left;">
+        </div>
+    </div>
+
+</div>
+
+<div title="Route details" id="routes-form"
+     style="width: auto; min-height: 0px; max-height: none; height: 269px;">
+    <div style="float: left;width: 150px">
+        <div style="margin-top: 10px">
+            <label style="font-size: 12px;" for="route-service-list">Available services</label>
+            <select id="route-service-list" style="width: 150px;">
+            </select>
+        </div>
+        <div style="margin-top: 10px">
+            <label style="font-size: 12px;" for="route-service-ports-list">Available ports</label>
+            <select id="route-service-ports-list" style="width: 150px;">
+            </select>
+        </div>
+        <div style="margin-top: 10px">
+            <label style="font-size: 12px;" for="route-service-ports-list">Route Name</label>
+            <input id="route-name" type="text" style="width: 140px; float: top"
+                   placeholder="Route Name">
+        </div>
+    </div>
+    <div style="margin-left: 20px; float: left; text-align: center; height: 95%; ; width: 30px; padding: 5px;">
+        <input style="width: 30px; margin-top: 25px" type="button" id="route-add-button" value="+">
+        <input style="width: 30px; margin-top: 10px" type="button" id="route-remove-button" value="-">
+    </div>
+    <div style="margin-left: 20px;margin-top: 10px; float: left;width: 250px">
+        <label style="font-size: 12px;" for="routes-list">Created Routes</label>
+        <select multiple size="4" id="routes-list" style="width: 240px;">
+
+        </select>
+    </div>
+
+</div>
+
+
+</body>
+</html>
